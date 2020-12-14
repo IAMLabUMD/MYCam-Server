@@ -240,7 +240,7 @@ class ObjectRecognizer:
             Returns:
 
     '''
-    def train(self, model_dir, img_dir):
+    def train_with_bottleneck(self, model_dir, img_dir):
         start_time = time.time()
         if self.debug:
             print('Start training ...', img_dir)
@@ -293,7 +293,7 @@ class ObjectRecognizer:
                 - entropy: entropy of the confidence scores
                 - conf: a dictionary with confidence scores of all labels (label, confidence score)
     '''
-    def predict(self, model_dir, img_path):
+    def predict_with_bottleneck(self, model_dir, img_path):
         # if the model does not exist, return None
         if not os.path.isdir(model_dir):
             return None, None, None
@@ -323,6 +323,12 @@ class ObjectRecognizer:
             print(best_label, entropy, conf)
 
         return best_label, entropy, conf
+        
+    def train(self, model_dir, img_dir):
+        self.train_without_bottleneck(model_dir, img_dir)
+        
+    def predict(self, model_dir, img_path):
+    	self.train_without_bottleneck(model_dir, img_path)
 
 
 if __name__ == '__main__':
@@ -336,13 +342,13 @@ if __name__ == '__main__':
     # best_label, _, _ = orec.predict('model', '/Users/jonggihong/Downloads/tmpImages/Knife/1.jpg')
     # print(best_label)
 
-    orec.train_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages')
-    best_label, _, _ = orec.predict_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages/Remote/1.jpg')
-    print(best_label)
-    best_label, _, _ = orec.predict_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages/Omega3/1.jpg')
-    print(best_label)
-    best_label, _, _ = orec.predict_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages/Knife/1.jpg')
-    print(best_label)
+#     orec.train_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages')
+#     best_label, _, _ = orec.predict_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages/Remote/1.jpg')
+#     print(best_label)
+#     best_label, _, _ = orec.predict_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages/Omega3/1.jpg')
+#     print(best_label)
+#     best_label, _, _ = orec.predict_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages/Knife/1.jpg')
+#     print(best_label)
 
 
     # base_model = InceptionV3(weights='imagenet', include_top=False, input_shape=(orec.input_width, orec.input_height, 3))
@@ -357,3 +363,14 @@ if __name__ == '__main__':
 #     '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Knife/1.jpg')
 #     orec.predict('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4', 
 #     '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Omega3/1.jpg')
+
+
+
+    orec.train_without_bottleneck('/home/jhong12/TOR-app-files/models/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83', 
+    '/home/jhong12/TOR-app-files/photo/TrainFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice')
+    orec.predict_without_bottleneck('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4', 
+    '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Remote/1.jpg')
+    orec.predict_without_bottleneck('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4', 
+    '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Knife/1.jpg')
+    orec.predict_without_bottleneck('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4', 
+    '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Omega3/1.jpg')
