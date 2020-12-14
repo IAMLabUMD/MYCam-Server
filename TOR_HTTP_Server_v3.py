@@ -89,7 +89,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 response.write(str.encode(output))
 
             elif cmd == 'loadModel':
-                object_recognizer.loadModelAndLabels(model_dir)
+                object_recognizer.load_model_and_labels(model_dir)
 
             elif cmd == 'trainRequest':
                 markFile = '/home/jhong12/TOR-app-files/isTraining'
@@ -98,7 +98,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 f.close()
                 train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/' + userID + '/' + category
 
-                object_recognizer.saveModelAndLabel(model_dir+'_prev', org_dir=model_dir)
+                object_recognizer.save_model_and_labels(model_dir + '_prev', org_dir=model_dir)
                 object_recognizer.train(model_dir, train_img_dir)
 
                 f = open(markFile, 'w')

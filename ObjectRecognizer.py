@@ -15,11 +15,13 @@ from shutil import copyfile
 from keras.layers import Dense, Flatten
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Model
+from keras.models import Sequential
 from keras.models import load_model
 from keras.preprocessing import image
 from keras.applications import InceptionV3
 from keras.applications import MobileNetV2
 from keras.applications.mobilenet import preprocess_input
+from keras.utils import to_categorical
 
 
 class ObjectRecognizer:
@@ -31,6 +33,11 @@ class ObjectRecognizer:
         self.model = None
         self.labels = None
 
+        # imports the mobilenet model and discards the last 1000 neuron layer.
+        self.base_model = InceptionV3(weights='imagenet', include_top=False,
+                                 input_shape=(self.input_width, self.input_height, 3))
+        print('loading the base model (', self.base_model.name, '): ')
+
     ''' loads the classification model and labels
         
         Arguments:
@@ -40,8 +47,7 @@ class ObjectRecognizer:
             - model: keras model instance from the model file
             - labels: list of labels
     '''
-
-    def loadModelAndLabels(self, model_dir):
+    def load_model_and_labels(self, model_dir):
         if self.curr_model_dir == model_dir:
             return self.model, self.labels
 
@@ -64,8 +70,7 @@ class ObjectRecognizer:
                 - org_dir: the directory with model and labels. 
             Returns:
     '''
-
-    def saveModelAndLabel(self, save_dir, org_dir=None):
+    def save_model_and_labels(self, save_dir, org_dir=None):
         if self.debug:
             print('saving the model...', save_dir)
         Path(save_dir).mkdir(parents=True, exist_ok=True)  # create the directory if it does not exist.
@@ -75,7 +80,7 @@ class ObjectRecognizer:
             if os.path.isdir(org_dir):
                 copyfile(os.path.join(org_dir, 'model.h5'), os.path.join(save_dir, 'model.h5'))
                 copyfile(os.path.join(org_dir, 'labels.txt'), os.path.join(save_dir, 'labels.txt'))
-                self.model, self.labels = self.loadModelAndLabels(org_dir)
+                self.model, self.labels = self.load_model_and_labels(org_dir)
             else:
                 print('The model to save is not found (no previous model).')
             return
@@ -90,14 +95,6 @@ class ObjectRecognizer:
         for i in range(len(self.labels)):
             f.write(self.labels[i] + '\n')
         f.close()
-        
-    ''' saves bottleneck features of the images
-    	https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
-    	
-    '''
-    def saveBottleneckFeatures(self, img_dir, bottleneck_dir):
-    	pass
-    
 
     ''' trains the object recognition model and saves the model and labels to files
 
@@ -108,8 +105,7 @@ class ObjectRecognizer:
             Returns:
             
     '''
-
-    def train(self, model_dir, img_dir):
+    def train_without_bottleneck(self, model_dir, img_dir):
         if self.debug:
             print('Start training ...', img_dir)
 
@@ -130,6 +126,7 @@ class ObjectRecognizer:
         # imports the mobilenet model and discards the last 1000 neuron layer.
         base_model = InceptionV3(weights='imagenet', include_top=False,
                                  input_shape=(self.input_width, self.input_height, 3))
+        base_model.trainable = False
 
         if self.debug:
             print('loading the base model (', base_model.name, '): ', time.time() - start_time)
@@ -148,7 +145,7 @@ class ObjectRecognizer:
 
         step_size_train = train_generator.n // train_generator.batch_size
         model.fit(train_generator, steps_per_epoch=step_size_train,
-                  epochs=500)  # 200? # 80: around 2 minutes, 200: around 5 minutes, 100: current
+                  epochs=100)  # 200? # 80: around 2 minutes, 200: around 5 minutes, 100: current
 
         if self.debug:
             print('training is done: ', time.time() - start_time)
@@ -159,7 +156,7 @@ class ObjectRecognizer:
         self.model = model
 
         # save the trained model and labels
-        self.saveModelAndLabel(model_dir)
+        self.save_model_and_labels(model_dir)
 
         if self.debug:
             print('saving the model to a file: ', time.time() - start_time)
@@ -175,14 +172,13 @@ class ObjectRecognizer:
                 - entropy: entropy of the confidence scores
                 - conf: a dictionary with confidence scores of all labels (label, confidence score)
     '''
-
-    def predict(self, model_dir, img_path):
+    def predict_without_bottleneck(self, model_dir, img_path):
         # if the model does not exist, return None
         if not os.path.isdir(model_dir):
             return None, None, None
 
         if self.curr_model_dir != model_dir:
-            self.model, self.labels = self.loadModelAndLabels(model_dir)
+            self.model, self.labels = self.load_model_and_labels(model_dir)
             self.curr_model_dir = model_dir
 
         img = image.load_img(img_path, target_size=(self.input_width, self.input_height))
@@ -205,13 +201,156 @@ class ObjectRecognizer:
 
         return best_label, entropy, conf
 
+    ''' saves bottleneck features of the images
+        https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
+        
+            Arguments:
+                - img_dir: the directory with training samples
+                - base_model: the base model used to create feature vectors of images
+                - bottleneck_dir: the directory where the feature vectors and labels of the features will be saved
+                
+            Return:
+                - features: feature vectors of the images
+                - features_labels: labels of the feature vectors
+                - labels: a directory with labels (index, label)
+    '''
+    def get_bottleneck_features(self, img_dir):
+        train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)  # included in our dependencies
+        train_generator = train_datagen.flow_from_directory(img_dir,
+                                                            target_size=(self.input_width, self.input_height),
+                                                            color_mode='rgb',
+                                                            batch_size=50,
+                                                            class_mode='categorical',
+                                                            shuffle=True)
+
+        class_indices = (train_generator.class_indices)
+        labels = dict((v, k) for k, v in class_indices.items())
+
+        bottleneck_features = self.base_model.predict(train_generator)
+        bottleneck_labels = train_generator.classes
+
+        return bottleneck_features, bottleneck_labels, labels
+
+    ''' trains the object recognition model and saves the model and labels to files
+
+            Arguments:
+                - model_dir: the directory to save the model and labels
+                - img_dir: the directory with training samples (images)
+
+            Returns:
+
+    '''
+    def train(self, model_dir, img_dir):
+        start_time = time.time()
+        if self.debug:
+            print('Start training ...', img_dir)
+
+        start_time = time.time()
+        bottleneck_features, bottleneck_labels, labels = self.get_bottleneck_features(img_dir)
+        bottleneck_labels_vector = to_categorical(bottleneck_labels)
+        if self.debug:
+            print('bottleneck features are collected: ', time.time() - start_time)
+
+        model = Sequential()
+        model.add(Flatten(input_shape=bottleneck_features.shape[1:]))
+        model.add(Dense(len(labels), activation='softmax'))  # final layer with softmax activation
+
+        for l in model.layers:
+            l.trainable = True
+        # model.layers[-1].trainable = True
+
+        model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+        if self.debug:
+            print('setting up the training: ', time.time() - start_time)
+
+        step_size_train = len(bottleneck_labels) // 50 # batch size is 50
+        model.fit(bottleneck_features, bottleneck_labels_vector, steps_per_epoch=step_size_train, shuffle=True,
+                  epochs=1000)  # 200? # 80: around 2 minutes, 200: around 5 minutes, 100: current
+
+        if self.debug:
+            print('training is done: ', time.time() - start_time)
+
+        # set current model and labels
+        self.curr_model_dir = model_dir
+        self.labels = labels
+        self.model = model
+
+        # save the trained model and labels
+        self.save_model_and_labels(model_dir)
+
+        if self.debug:
+            print('saving the model to a file: ', time.time() - start_time)
+
+    ''' predicts the object in an image
+
+            Arguments:
+                - model_dir: the directory with the model and labels
+                - img_path: the target image
+
+            Returns:
+                - best_label: the label with the highest confidence score
+                - entropy: entropy of the confidence scores
+                - conf: a dictionary with confidence scores of all labels (label, confidence score)
+    '''
+    def predict(self, model_dir, img_path):
+        # if the model does not exist, return None
+        if not os.path.isdir(model_dir):
+            return None, None, None
+
+        if self.curr_model_dir != model_dir:
+            self.model, self.labels = self.load_model_and_labels(model_dir)
+            self.curr_model_dir = model_dir
+
+        img = image.load_img(img_path, target_size=(self.input_width, self.input_height))
+        x = image.img_to_array(img)
+        x = np.expand_dims(x, axis=0)
+        x = preprocess_input(x)
+
+        feature = self.base_model.predict(x)
+
+        preds = self.model.predict(feature)[0].tolist()
+        if self.debug:
+            print(preds)
+
+        entropy = scipy.stats.entropy(preds)
+        conf = {}
+        best_label = self.labels[preds.index(max(preds))]
+        for i in range(len(self.labels)):
+            conf[self.labels[i]] = preds[i]
+
+        if self.debug:
+            print(best_label, entropy, conf)
+
+        return best_label, entropy, conf
+
 
 if __name__ == '__main__':
     orec = ObjectRecognizer()
     orec.debug = True
-#     orec.train('/home/jhong12/TOR-app-files/models/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83', '/home/jhong12/TOR-app-files/photo/TrainFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice')
-#     orec.train('model', '/Users/jonggihong/Downloads/tmpImages')
-    orec.predict('model', '/Users/jonggihong/Downloads/tmpImages/Remote/1.jpg')
+    # orec.train('model', '/Users/jonggihong/Downloads/tmpImages')
+    # best_label, _, _ = orec.predict('model', '/Users/jonggihong/Downloads/tmpImages/Remote/1.jpg')
+    # print(best_label)
+    # best_label, _, _ = orec.predict('model', '/Users/jonggihong/Downloads/tmpImages/Omega3/1.jpg')
+    # print(best_label)
+    # best_label, _, _ = orec.predict('model', '/Users/jonggihong/Downloads/tmpImages/Knife/1.jpg')
+    # print(best_label)
+
+    orec.train_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages')
+    best_label, _, _ = orec.predict_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages/Remote/1.jpg')
+    print(best_label)
+    best_label, _, _ = orec.predict_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages/Omega3/1.jpg')
+    print(best_label)
+    best_label, _, _ = orec.predict_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages/Knife/1.jpg')
+    print(best_label)
+
+
+    # base_model = InceptionV3(weights='imagenet', include_top=False, input_shape=(orec.input_width, orec.input_height, 3))
+    # bottleneck_features, bottleneck_labels, labels = orec.get_bottleneck_features('/Users/jonggihong/Downloads/tmpImages', base_model)
+
+
+    # server test cases
+    # orec.train('/home/jhong12/TOR-app-files/models/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83', '/home/jhong12/TOR-app-files/photo/TrainFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice')
 #     orec.predict('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4', 
 #     '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Remote/1.jpg')
 #     orec.predict('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4', 
