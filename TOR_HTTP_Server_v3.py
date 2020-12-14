@@ -125,16 +125,18 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             msg = 'Error: %s' % e
             self.wfile.write(msg.encode())
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'  # second gpu
 
-print('run')
-markFile = '/home/jhong12/TOR-app-files/isTraining'
-f = open(markFile, 'w')
-f.write('no')
-f.close()
+if __name__ == '__main__':
+    os.environ['CUDA_VISIBLE_DEVICES'] = '1'  # second gpu
 
-object_recognizer = ObjectRecognizer()
-object_recognizer.debug = True
+    print('run')
+    markFile = '/home/jhong12/TOR-app-files/isTraining'
+    f = open(markFile, 'w')
+    f.write('no')
+    f.close()
 
-httpd = HTTPServer(('128.8.235.4', 8000), SimpleHTTPRequestHandler)
-httpd.serve_forever()
+    object_recognizer = ObjectRecognizer()
+    object_recognizer.debug = True
+
+    httpd = HTTPServer(('128.8.235.4', 8000), SimpleHTTPRequestHandler)
+    httpd.serve_forever()
