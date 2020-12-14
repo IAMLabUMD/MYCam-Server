@@ -17,6 +17,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Model
 from keras.models import load_model
 from keras.preprocessing import image
+from keras.applications import InceptionV3
 from keras.applications import MobileNetV2
 from keras.applications.mobilenet import preprocess_input
 
@@ -75,9 +76,9 @@ class ObjectRecognizer:
                 copyfile(os.path.join(org_dir, 'model.h5'), os.path.join(save_dir, 'model.h5'))
                 copyfile(os.path.join(org_dir, 'labels.txt'), os.path.join(save_dir, 'labels.txt'))
                 self.model, self.labels = self.loadModelAndLabels(org_dir)
-                return
             else:
                 print('The model to save is not found (no previous model).')
+            return
 
         # save the model to file
         model_path = os.path.join(save_dir, 'model.h5')
@@ -89,6 +90,14 @@ class ObjectRecognizer:
         for i in range(len(self.labels)):
             f.write(self.labels[i] + '\n')
         f.close()
+        
+    ''' saves bottleneck features of the images
+    	https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
+    	
+    '''
+    def saveBottleneckFeatures(self, img_dir, bottleneck_dir):
+    	pass
+    
 
     ''' trains the object recognition model and saves the model and labels to files
 
@@ -107,9 +116,9 @@ class ObjectRecognizer:
         start_time = time.time()
         train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)  # included in our dependencies
         train_generator = train_datagen.flow_from_directory(img_dir,
-                                                            target_size=(224, 224),
+                                                            target_size=(self.input_width, self.input_height),
                                                             color_mode='rgb',
-                                                            batch_size=30,
+                                                            batch_size=50,
                                                             class_mode='categorical',
                                                             shuffle=True)
 
@@ -119,7 +128,7 @@ class ObjectRecognizer:
             print('training data are collected: ', time.time() - start_time)
 
         # imports the mobilenet model and discards the last 1000 neuron layer.
-        base_model = MobileNetV2(weights='imagenet', include_top=False,
+        base_model = InceptionV3(weights='imagenet', include_top=False,
                                  input_shape=(self.input_width, self.input_height, 3))
 
         if self.debug:
@@ -139,7 +148,7 @@ class ObjectRecognizer:
 
         step_size_train = train_generator.n // train_generator.batch_size
         model.fit(train_generator, steps_per_epoch=step_size_train,
-                  epochs=100)  # 200? # 80: around 2 minutes, 200: around 5 minutes, 100: current
+                  epochs=500)  # 200? # 80: around 2 minutes, 200: around 5 minutes, 100: current
 
         if self.debug:
             print('training is done: ', time.time() - start_time)
@@ -200,5 +209,12 @@ class ObjectRecognizer:
 if __name__ == '__main__':
     orec = ObjectRecognizer()
     orec.debug = True
-    orec.train('model', '/Users/jonggihong/Downloads/tmpImages')
-    # orec.predict('model', '/Users/jonggihong/Downloads/tmpImages/Knife/1.jpg')
+#     orec.train('/home/jhong12/TOR-app-files/models/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83', '/home/jhong12/TOR-app-files/photo/TrainFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice')
+#     orec.train('model', '/Users/jonggihong/Downloads/tmpImages')
+    orec.predict('model', '/Users/jonggihong/Downloads/tmpImages/Remote/1.jpg')
+#     orec.predict('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4', 
+#     '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Remote/1.jpg')
+#     orec.predict('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4', 
+#     '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Knife/1.jpg')
+#     orec.predict('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4', 
+#     '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Omega3/1.jpg')

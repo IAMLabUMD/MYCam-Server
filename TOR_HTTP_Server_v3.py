@@ -1,3 +1,11 @@
+'''
+    An HTTP server that trains the object recognizer model and gets a prediction from it remotely.
+
+    Author: Jonggi Hong
+    Date: 12/13/2020
+'''
+
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -24,12 +32,9 @@ from ObjectRecognizer import ObjectRecognizer
 
 # ssh -N -f -L localhost:4000:localhost:4000 jhong12@128.8.235.4
 
-class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
-    def __init__(self):
-        self.isTraining = False
-        self.object_recognizer = ObjectRecognizer()
-        self.object_recognizer.debug = True
 
+
+class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
     def safeGetValue(self, dic, k):
         if k in dic:
             return dic[k]
@@ -48,7 +53,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             params[pstr[0]] = pstr[1]
 
         print(params)
-        userID = self.safeGetValue(params, 'userID')
+        userID = self.safeGetValue(params, 'userId')
         cmd = self.safeGetValue(params, 'type')
         category = self.safeGetValue(params, 'category')
         img_path = self.safeGetValue(params, 'imgPath')
@@ -61,17 +66,20 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(b'Hello, world!')
 
     def do_POST(self):
+        global object_recognizer
+    	
         try:
             start_time = time.time()
             userID, cmd, category, img_path = self.parseParams()
             model_dir = '/home/jhong12/TOR-app-files/models/' + userID
+            print(userID, cmd, category, img_path)
             response = BytesIO()
 
             if cmd == 'test':
-                best_label, entropy, conf = self.object_recognizer.predict(model_dir, img_path)
+                best_label, entropy, conf = object_recognizer.predict(model_dir, img_path)
 
                 output = ''
-                if best_label is None:
+                if best_label is None: # if the model does not exist
                     output = 'Object recognition model does not exist.'
                 else:
                     output = str(entropy)
@@ -81,7 +89,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 response.write(str.encode(output))
 
             elif cmd == 'loadModel':
-                self.object_recognizer.loadModelAndLabels(model_dir)
+                object_recognizer.loadModelAndLabels(model_dir)
 
             elif cmd == 'trainRequest':
                 markFile = '/home/jhong12/TOR-app-files/isTraining'
@@ -90,8 +98,8 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 f.close()
                 train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/' + userID + '/' + category
 
-                self.object_recognizer.saveModelAndLabel(model_dir+'_prev', org_dir=model_dir)
-                self.object_recognizer.train(model_dir, train_img_dir)
+                object_recognizer.saveModelAndLabel(model_dir+'_prev', org_dir=model_dir)
+                object_recognizer.train(model_dir, train_img_dir)
 
                 f = open(markFile, 'w')
                 f.write('no')
@@ -124,6 +132,9 @@ markFile = '/home/jhong12/TOR-app-files/isTraining'
 f = open(markFile, 'w')
 f.write('no')
 f.close()
+
+object_recognizer = ObjectRecognizer()
+object_recognizer.debug = True
 
 httpd = HTTPServer(('128.8.235.4', 8000), SimpleHTTPRequestHandler)
 httpd.serve_forever()
