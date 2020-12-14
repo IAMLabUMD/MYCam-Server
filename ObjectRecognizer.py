@@ -33,10 +33,14 @@ class ObjectRecognizer:
         self.model = None
         self.labels = None
 
+        ####
+        ## The base_model is used for train_with_bottleneck and predict_with_bottleneck functions,
+        ## but these functions are not used now.
+        ####
         # imports the mobilenet model and discards the last 1000 neuron layer.
-        self.base_model = InceptionV3(weights='imagenet', include_top=False,
-                                 input_shape=(self.input_width, self.input_height, 3))
-        print('loading the base model (', self.base_model.name, '): ')
+#         self.base_model = InceptionV3(weights='imagenet', include_top=False,
+#                                  input_shape=(self.input_width, self.input_height, 3))
+#         print('loading the base model (', self.base_model.name, '): ')
 
     ''' loads the classification model and labels
         
@@ -231,7 +235,10 @@ class ObjectRecognizer:
 
         return bottleneck_features, bottleneck_labels, labels
 
-    ''' trains the object recognition model and saves the model and labels to files
+    ''' trains the object recognition model with the bottleneck features and saves the model and labels to files.
+    	The bottleneck features are used to train the model faster.
+    	
+    	ATTENTION: This function is not implemented completely yet. This does not train a model correctly.
 
             Arguments:
                 - model_dir: the directory to save the model and labels
@@ -282,7 +289,10 @@ class ObjectRecognizer:
         if self.debug:
             print('saving the model to a file: ', time.time() - start_time)
 
-    ''' predicts the object in an image
+    ''' predicts the object in an image. This function uses the model trained with the bottleneck features (train_with_bottleneck).
+    
+    	ATTENTION: The train_with_bottleneck() function is not implemented yet. This function can be used after train_with_bottleneck()
+    	function is implemented.
 
             Arguments:
                 - model_dir: the directory with the model and labels
@@ -328,7 +338,7 @@ class ObjectRecognizer:
         self.train_without_bottleneck(model_dir, img_dir)
         
     def predict(self, model_dir, img_path):
-    	self.train_without_bottleneck(model_dir, img_path)
+    	return self.predict_without_bottleneck(model_dir, img_path)
 
 
 if __name__ == '__main__':

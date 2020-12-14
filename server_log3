@@ -1,0 +1,48 @@
+nohup: ignoring input
+2020-12-14 06:50:45.366302: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+run
+{'userId': 'CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83', 'category': 'Spice', 'type': 'test', 'imgPath': '/home/jhong12/TOR-app-files/photo/TestFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/step12-2020-12-14-06-50-50-9390.jpg'}
+CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83 test Spice /home/jhong12/TOR-app-files/photo/TestFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/step12-2020-12-14-06-50-50-9390.jpg
+2020-12-14 06:50:51.666737: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcuda.so.1
+2020-12-14 06:50:51.862858: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:06:00.0 name: GeForce GTX 1080 Ti computeCapability: 6.1
+coreClock: 1.582GHz coreCount: 28 deviceMemorySize: 10.92GiB deviceMemoryBandwidth: 451.17GiB/s
+2020-12-14 06:50:51.862913: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2020-12-14 06:50:51.865882: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcublas.so.10
+2020-12-14 06:50:51.868604: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcufft.so.10
+2020-12-14 06:50:51.869085: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcurand.so.10
+2020-12-14 06:50:51.872234: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusolver.so.10
+2020-12-14 06:50:51.873918: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusparse.so.10
+2020-12-14 06:50:51.880295: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+2020-12-14 06:50:51.890641: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1858] Adding visible gpu devices: 0
+2020-12-14 06:50:51.891062: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN)to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2020-12-14 06:50:51.913188: I tensorflow/core/platform/profile_utils/cpu_utils.cc:104] CPU Frequency: 2199835000 Hz
+2020-12-14 06:50:51.918899: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x6ab9e10 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-12-14 06:50:51.918948: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2020-12-14 06:50:52.235311: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x6b26620 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2020-12-14 06:50:52.235375: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): GeForce GTX 1080 Ti, Compute Capability 6.1
+2020-12-14 06:50:52.241075: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:06:00.0 name: GeForce GTX 1080 Ti computeCapability: 6.1
+coreClock: 1.582GHz coreCount: 28 deviceMemorySize: 10.92GiB deviceMemoryBandwidth: 451.17GiB/s
+2020-12-14 06:50:52.241155: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2020-12-14 06:50:52.241206: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcublas.so.10
+2020-12-14 06:50:52.241239: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcufft.so.10
+2020-12-14 06:50:52.241271: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcurand.so.10
+2020-12-14 06:50:52.241320: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusolver.so.10
+2020-12-14 06:50:52.241353: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusparse.so.10
+2020-12-14 06:50:52.241384: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+2020-12-14 06:50:52.254315: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1858] Adding visible gpu devices: 0
+2020-12-14 06:50:52.254399: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2020-12-14 06:50:53.244394: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1257] Device interconnect StreamExecutor with strength 1 edge matrix:
+2020-12-14 06:50:53.244463: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1263]      0 
+2020-12-14 06:50:53.244475: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1276] 0:   N 
+2020-12-14 06:50:53.253230: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1402] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10266 MB memory) -> physical GPU (device: 0, name: GeForce GTX 1080 Ti, pci bus id: 0000:06:00.0, compute capability: 6.1)
+2020-12-14 06:50:57.580936: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcublas.so.10
+2020-12-14 06:50:57.885213: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+[1.0, 2.9490937639495695e-21, 6.700996503666417e-22]
+Knife 1.7208233832852715e-19 {'Knife': 1.0, 'Omega3': 2.9490937639495695e-21, 'Remote': 6.700996503666417e-22}
+{'userId': 'CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83', 'category': 'Spice', 'type': 'test', 'imgPath': '/home/jhong12/TOR-app-files/photo/TestFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/step12-2020-12-14-06-51-04-2880.jpg'}
+CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83 test Spice /home/jhong12/TOR-app-files/photo/TestFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/step12-2020-12-14-06-51-04-2880.jpg
+[7.541547872179687e-38, 1.3439322587827578e-32, 1.0]
+Remote 9.862796679894404e-31 {'Knife': 7.541547872179687e-38, 'Omega3': 1.3439322587827578e-32, 'Remote': 1.0}
