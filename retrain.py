@@ -1126,12 +1126,14 @@ def main(_):
     module_spec = hub.load_module_spec(FLAGS.tfhub_module)
     graph, bottleneck_tensor, resized_image_tensor, wants_quantization = (create_module_graph(module_spec))
 
+    ########################################################################################################################
     # Add the new layer that we'll be training.
     with graph.as_default():
         (train_step, cross_entropy, bottleneck_input,
          ground_truth_input, final_tensor) = add_final_retrain_ops(
             class_count, FLAGS.final_tensor_name, bottleneck_tensor,
             wants_quantization, is_training=True)
+    ########################################################################################################################
 
     with tf.Session(graph=graph) as sess:
         # Initialize all weights: for the module to their pretrained values,

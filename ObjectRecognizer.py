@@ -1,5 +1,5 @@
 '''
-    A teachable object recognizer class with MobileNetV2 and transfer learning
+    A teachable object recognizer class with transfer learning
 
     Author: Jonggi Hong
     Date: 12/13/2020
@@ -38,9 +38,10 @@ class ObjectRecognizer:
         ## but these functions are not used now.
         ####
         # imports the mobilenet model and discards the last 1000 neuron layer.
-#         self.base_model = InceptionV3(weights='imagenet', include_top=False,
-#                                  input_shape=(self.input_width, self.input_height, 3))
-#         print('loading the base model (', self.base_model.name, '): ')
+        self.base_model = InceptionV3(weights='imagenet', include_top=False,
+                                 input_shape=(self.input_width, self.input_height, 3))
+        self.base_model.trainable = False
+        print('loading the base model (', self.base_model.name, '): ')
 
     ''' loads the classification model and labels
         
@@ -99,6 +100,36 @@ class ObjectRecognizer:
         for i in range(len(self.labels)):
             f.write(self.labels[i] + '\n')
         f.close()
+
+    ''' saves bottleneck features of the images
+        https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
+        
+            Arguments:
+                - img_dir: the directory with training samples
+                - base_model: the base model used to create feature vectors of images
+                - bottleneck_dir: the directory where the feature vectors and labels of the features will be saved
+                
+            Return:
+                - features: feature vectors of the images
+                - features_labels: labels of the feature vectors
+                - labels: a directory with labels (index, label)
+    '''
+    def get_bottleneck_features(self, img_dir):
+        train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)  # included in our dependencies
+        train_generator = train_datagen.flow_from_directory(img_dir,
+                                                            target_size=(self.input_width, self.input_height),
+                                                            color_mode='rgb',
+                                                            batch_size=50,
+                                                            class_mode='categorical',
+                                                            shuffle=True)
+
+        class_indices = (train_generator.class_indices)
+        labels = dict((v, k) for k, v in class_indices.items())
+
+        bottleneck_features = self.base_model.predict(train_generator)
+        bottleneck_labels = train_generator.classes
+
+        return bottleneck_features, bottleneck_labels, labels
 
     ''' trains the object recognition model and saves the model and labels to files
 
@@ -205,36 +236,6 @@ class ObjectRecognizer:
 
         return best_label, entropy, conf
 
-    ''' saves bottleneck features of the images
-        https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
-        
-            Arguments:
-                - img_dir: the directory with training samples
-                - base_model: the base model used to create feature vectors of images
-                - bottleneck_dir: the directory where the feature vectors and labels of the features will be saved
-                
-            Return:
-                - features: feature vectors of the images
-                - features_labels: labels of the feature vectors
-                - labels: a directory with labels (index, label)
-    '''
-    def get_bottleneck_features(self, img_dir):
-        train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)  # included in our dependencies
-        train_generator = train_datagen.flow_from_directory(img_dir,
-                                                            target_size=(self.input_width, self.input_height),
-                                                            color_mode='rgb',
-                                                            batch_size=50,
-                                                            class_mode='categorical',
-                                                            shuffle=True)
-
-        class_indices = (train_generator.class_indices)
-        labels = dict((v, k) for k, v in class_indices.items())
-
-        bottleneck_features = self.base_model.predict(train_generator)
-        bottleneck_labels = train_generator.classes
-
-        return bottleneck_features, bottleneck_labels, labels
-
     ''' trains the object recognition model with the bottleneck features and saves the model and labels to files.
     	The bottleneck features are used to train the model faster.
     	
@@ -273,7 +274,7 @@ class ObjectRecognizer:
 
         step_size_train = len(bottleneck_labels) // 50 # batch size is 50
         model.fit(bottleneck_features, bottleneck_labels_vector, steps_per_epoch=step_size_train, shuffle=True,
-                  epochs=1000)  # 200? # 80: around 2 minutes, 200: around 5 minutes, 100: current
+                  epochs=200)  # 200? # 80: around 2 minutes, 200: around 5 minutes, 100: current
 
         if self.debug:
             print('training is done: ', time.time() - start_time)
@@ -335,30 +336,25 @@ class ObjectRecognizer:
         return best_label, entropy, conf
         
     def train(self, model_dir, img_dir):
-        self.train_without_bottleneck(model_dir, img_dir)
+        # self.train_without_bottleneck(model_dir, img_dir)
+        self.train_with_bottleneck(model_dir, img_dir)
         
     def predict(self, model_dir, img_path):
-    	return self.predict_without_bottleneck(model_dir, img_path)
+        # return self.predict_without_bottleneck(model_dir, img_path)
+        return self.predict_with_bottleneck(model_dir, img_path)
 
 
 if __name__ == '__main__':
+    # test codes
     orec = ObjectRecognizer()
     orec.debug = True
-    # orec.train('model', '/Users/jonggihong/Downloads/tmpImages')
-    # best_label, _, _ = orec.predict('model', '/Users/jonggihong/Downloads/tmpImages/Remote/1.jpg')
-    # print(best_label)
-    # best_label, _, _ = orec.predict('model', '/Users/jonggihong/Downloads/tmpImages/Omega3/1.jpg')
-    # print(best_label)
-    # best_label, _, _ = orec.predict('model', '/Users/jonggihong/Downloads/tmpImages/Knife/1.jpg')
-    # print(best_label)
-
-#     orec.train_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages')
-#     best_label, _, _ = orec.predict_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages/Remote/1.jpg')
-#     print(best_label)
-#     best_label, _, _ = orec.predict_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages/Omega3/1.jpg')
-#     print(best_label)
-#     best_label, _, _ = orec.predict_without_bottleneck('model', '/Users/jonggihong/Downloads/tmpImages/Knife/1.jpg')
-#     print(best_label)
+    orec.train('model', '/Users/jonggihong/Downloads/tmpImages')
+    best_label, _, _ = orec.predict('model', '/Users/jonggihong/Downloads/tmpImages/Remote/1.jpg')
+    print(best_label)
+    best_label, _, _ = orec.predict('model', '/Users/jonggihong/Downloads/tmpImages/Omega3/1.jpg')
+    print(best_label)
+    best_label, _, _ = orec.predict('model', '/Users/jonggihong/Downloads/tmpImages/Knife/1.jpg')
+    print(best_label)
 
 
     # base_model = InceptionV3(weights='imagenet', include_top=False, input_shape=(orec.input_width, orec.input_height, 3))
@@ -376,11 +372,11 @@ if __name__ == '__main__':
 
 
 
-    orec.train_without_bottleneck('/home/jhong12/TOR-app-files/models/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83', 
-    '/home/jhong12/TOR-app-files/photo/TrainFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice')
-    orec.predict_without_bottleneck('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4', 
-    '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Remote/1.jpg')
-    orec.predict_without_bottleneck('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4', 
-    '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Knife/1.jpg')
-    orec.predict_without_bottleneck('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4', 
-    '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Omega3/1.jpg')
+    # orec.train_without_bottleneck('/home/jhong12/TOR-app-files/models/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83',
+    # '/home/jhong12/TOR-app-files/photo/TrainFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice')
+    # orec.predict_without_bottleneck('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4',
+    # '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Remote/1.jpg')
+    # orec.predict_without_bottleneck('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4',
+    # '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Knife/1.jpg')
+    # orec.predict_without_bottleneck('/home/jhong12/TOR-app-files/models/72F80764-EA2B-4B74-93B6-C4CA584551A4',
+    # '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Omega3/1.jpg')
