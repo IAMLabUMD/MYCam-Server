@@ -107,6 +107,8 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
                 print('print response: training is done.')
                 response.write(b'Training is done')
+            elif cmd == 'getImgDescriptor':
+            	response.write(b'getImgDescriptor player')
 
             else:
                 print('Debugging...')
