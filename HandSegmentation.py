@@ -12,11 +12,16 @@ import os
 import sys
 import argparse
 import csv
+# insert at 1, 0 is the script path (or '' in REPL)
+sys.path.insert(1, '/home/jhong12/TOR-app-files/HandSegmentationFiles')
+sys.path.insert(1, '/home/jhong12/TOR-app-files/HandSegmentationFiles/HandSegIncludes')
 
 # https://github.com/tensorflow/tensorflow/issues/2034#issuecomment-220820070
 import numpy as np
 import cv2
-import tensorflow as tf
+# import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 from fractions import Fraction
 from sklearn.metrics import average_precision_score
@@ -27,10 +32,8 @@ import TOR_utils
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.INFO,
                     stream=sys.stdout)
-
-sys.path.insert(1, 'incl')
-
-from seg_utils import seg_utils as seg
+                    
+from kitti_devkit import seg_utils as seg
 
 try:
     # Check whether setup was done correctly
@@ -141,8 +144,8 @@ class Segmentation:
 
     def do(self, image):
         # read the input image file into numpy array
+        shape = image.shape
         if self.debug:
-            shape = image.shape
             print("DEBUG: image shape = (", str(shape[0]), str(shape[1]), ")")
 
         # resize the input image if set
