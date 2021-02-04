@@ -15,7 +15,7 @@ utils_path = od_path + 'Utils'
 sys.path.append(src_path)
 sys.path.append(utils_path)
 
-print(sys.path)
+# print(sys.path)
 
 import argparse
 from keras_yolo3.yolo import YOLO, detect_video

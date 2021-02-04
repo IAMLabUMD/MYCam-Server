@@ -20,6 +20,8 @@ import time
 import os
 from ObjectRecognizer import ObjectRecognizer
 from DescriptorGenerator import DescriptorGenerator
+from datetime import datetime
+
 
 
 # ssh jhong12@128.8.235.4
@@ -31,16 +33,26 @@ from DescriptorGenerator import DescriptorGenerator
 # ps -aux
 # sudo ps -U jhong12
 
+# jupyter notebook --no-browser --port=4000
 # ssh -N -f -L localhost:4000:localhost:4000 jhong12@128.8.235.4
+# Current PID: 34740
 
-
+log_path = '../logs/request_logs.txt'
+		
+def writeLog(line):
+	# datetime object containing current date and time
+	now = datetime.now()
+	dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+	f= open(log_path,"a+")
+	f.write(line+','+dt_string+'\n')
+	f.close()
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 	def safeGetValue(self, dic, k):
 		if k in dic:
 			return dic[k]
 		else:
-			return None
+			return 'None'
 
 	def parseParams(self):
 		content_length = int(self.headers['Content-Length'])
@@ -58,22 +70,30 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 		cmd = self.safeGetValue(params, 'type')
 		category = self.safeGetValue(params, 'category')
 		img_path = self.safeGetValue(params, 'imgPath')
-		return userID, cmd, category, img_path
+		request_time = self.safeGetValue(params, 'time')
+		org_fname = self.safeGetValue(params, 'org_fname')
+		object_name = self.safeGetValue(params, 'object_name')
+		return userID, cmd, category, img_path, request_time, org_fname, object_name
 
 	def do_GET(self):
-		print('GET')
-		self.send_response(200)
-		self.end_headers()
-		self.wfile.write(b'Hello, world!')
+		try:
+			print('GET')
+			self.send_response(200)
+			self.end_headers()
+			self.wfile.write(b'Hello, world!')
+		except:
+			print('GET Exception')
+			print(traceback.format_exc())
 
 	def do_POST(self):
 		global object_recognizer, des_generator
 	
 		try:
 			start_time = time.time()
-			userID, cmd, category, img_path = self.parseParams()
+			userID, cmd, category, img_path, request_time, org_fname, object_name = self.parseParams()
 			model_dir = '/home/jhong12/TOR-app-files/models/' + userID
 			print(userID, cmd, category, img_path)
+			writeLog('request,'+userID+','+cmd+','+category+','+img_path+','+request_time+','+org_fname)
 			response = BytesIO()
 
 			if cmd == 'test':
@@ -88,6 +108,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 						output = output + '-:-' + label + '/' + str(confidence)
 
 				response.write(str.encode(output))
+				writeLog('testResult,'+userID+','+org_fname+','+output)
 
 			elif cmd == 'loadModel':
 				object_recognizer.load_model_and_labels(model_dir)
@@ -100,17 +121,33 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 				train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/' + userID + '/' + category
 
 				object_recognizer.save_model_and_labels(model_dir + '_prev', org_dir=model_dir)
-				object_recognizer.train(model_dir, train_img_dir)
+				train_res = object_recognizer.train(model_dir, train_img_dir)
 
 				f = open(markFile, 'w')
 				f.write('no')
 				f.close()
 
-				print('print response: training is done.')
-				response.write(b'Training is done')
+				if train_res == 1:
+					print('Print response: training is done.')
+					writeLog('trainingDone,'+userID)
+					response.write(b'Training is done')
+				else:
+					print('Training failed: fewer than three objects.')
+					writeLog('TrainingFail-FewerThanThree,'+userID)
+					response.write(b'Training failed')
+					
 			elif cmd == 'getImgDescriptor':
-				hand, blurry, cropped, small = des_generator.getImageDescriptor(img_path)
-				output = str(hand)+','+str(blurry)+','+str(cropped)+','+str(small)
+				hand, blurry, cropped, small, desc_dic = des_generator.getImageDescriptor(img_path)
+				output = str(hand)+'#'+str(blurry)+'#'+str(cropped)+'#'+str(small)+'#'+str(desc_dic)+'#'+str(request_time)
+				writeLog('imgDescriptors,'+userID+','+output+','+org_fname+','+str(desc_dic))
+				response.write(str.encode(output))
+			elif cmd == 'getSetDescriptor':
+				train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/' + userID + '/' + category + '/' + object_name
+				arinfo_path = '/home/jhong12/TOR-app-files/ARInfo/' + userID + '/' + object_name + '/desc_info.txt'
+				
+				bg_var, side_var, dist_var, hand, blurry, cropped, small = des_generator.getSetDescriptor(train_img_dir, arinfo_path)
+				output = str(bg_var)+','+str(side_var)+','+str(dist_var)+','+str(hand)+','+str(blurry)+','+str(cropped)+','+str(small)
+				writeLog('setDescriptors,'+userID+','+output)
 				response.write(str.encode(output))
 			else:
 				print('Debugging...')
@@ -138,16 +175,16 @@ if __name__ == '__main__':
 	f.write('no')
 	f.close()
 
-	#     object_recognizer = ObjectRecognizer()
-	#     object_recognizer.debug = True
+	object_recognizer = ObjectRecognizer()
+	object_recognizer.debug = True
 
 	des_generator = DescriptorGenerator()
 	des_generator.initialize()
 	
 	# generate descriptor for a dummy image to load models on the memory
-	des_generator.getImageDescriptor('/home/jhong12/TOR-app-files/photo/TempFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/tmp_2.jpg')
+	des_generator.getImageDescriptor('/home/jhong12/TOR-app-files/photo/TempFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/tmp_2.jpg') # warm up
 
 	print('run')
 
-	httpd = HTTPServer(('128.8.235.4', 8000), SimpleHTTPRequestHandler)
+	httpd = HTTPServer(('127.0.0.1', 8000), SimpleHTTPRequestHandler)
 	httpd.serve_forever()

@@ -1,0 +1,224 @@
+nohup: ignoring input
+2021-02-02 12:08:21.590808: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+WARNING:tensorflow:From /home/jhong12/TOR-app-files/venv/lib/python3.6/site-packages/tensorflow/python/compat/v2_compat.py:96: disable_resource_variables (from tensorflow.python.ops.variable_scope) is deprecated and will be removed in a future version.
+Instructions for updating:
+non-resource variables are not supported in the long term
+2021-02-02 12:08:23,310 INFO No environment variable 'TV_PLUGIN_DIR' found. Set to '/home/jhong12/tv-plugins'.
+2021-02-02 12:08:23,310 INFO No environment variable 'TV_STEP_SHOW' found. Set to '50'.
+2021-02-02 12:08:23,310 INFO No environment variable 'TV_STEP_EVAL' found. Set to '250'.
+2021-02-02 12:08:23,310 INFO No environment variable 'TV_STEP_WRITE' found. Set to '1000'.
+2021-02-02 12:08:23,310 INFO No environment variable 'TV_MAX_KEEP' found. Set to '10'.
+2021-02-02 12:08:23,310 INFO No environment variable 'TV_STEP_STR' found. Set to 'Step {step}/{total_steps}: loss = {loss_value:.2f}; lr = {lr_value:.2e}; {sec_per_batch:.3f} sec (per Batch); {examples_per_sec:.1f} imgs/sec'.
+2021-02-02 12:08:23.337071: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcuda.so.1
+2021-02-02 12:08:27.448707: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:06:00.0 name: GeForce GTX 1080 Ti computeCapability: 6.1
+coreClock: 1.582GHz coreCount: 28 deviceMemorySize: 10.92GiB deviceMemoryBandwidth: 451.17GiB/s
+2021-02-02 12:08:27.448814: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2021-02-02 12:08:27.452348: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcublas.so.10
+2021-02-02 12:08:27.455290: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcufft.so.10
+2021-02-02 12:08:27.455785: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcurand.so.10
+2021-02-02 12:08:27.459064: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusolver.so.10
+2021-02-02 12:08:27.460764: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusparse.so.10
+2021-02-02 12:08:27.466976: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+2021-02-02 12:08:27.470181: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1858] Adding visible gpu devices: 0
+2021-02-02 12:08:27.473154: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN)to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-02-02 12:08:27.495141: I tensorflow/core/platform/profile_utils/cpu_utils.cc:104] CPU Frequency: 2199835000 Hz
+2021-02-02 12:08:27.499446: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x55925d0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2021-02-02 12:08:27.499495: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2021-02-02 12:08:27.680733: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x55fee50 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2021-02-02 12:08:27.680800: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): GeForce GTX 1080 Ti, Compute Capability 6.1
+2021-02-02 12:08:27.683239: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:06:00.0 name: GeForce GTX 1080 Ti computeCapability: 6.1
+coreClock: 1.582GHz coreCount: 28 deviceMemorySize: 10.92GiB deviceMemoryBandwidth: 451.17GiB/s
+2021-02-02 12:08:27.683331: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2021-02-02 12:08:27.683396: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcublas.so.10
+2021-02-02 12:08:27.683436: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcufft.so.10
+2021-02-02 12:08:27.683475: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcurand.so.10
+2021-02-02 12:08:27.683512: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusolver.so.10
+2021-02-02 12:08:27.683549: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusparse.so.10
+2021-02-02 12:08:27.683588: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+2021-02-02 12:08:27.687795: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1858] Adding visible gpu devices: 0
+2021-02-02 12:08:27.687874: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2021-02-02 12:08:28.575441: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1257] Device interconnect StreamExecutor with strength 1 edge matrix:
+2021-02-02 12:08:28.575492: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1263]      0 
+2021-02-02 12:08:28.575501: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1276] 0:   N 
+2021-02-02 12:08:28.577851: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1402] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10266 MB memory) -> physical GPU (device: 0, name: GeForce GTX 1080 Ti, pci bus id: 0000:06:00.0, compute capability: 6.1)
+loading the base model ( inception_v3 ): 
+2021-02-02 12:08:38,512 INFO f: <_io.TextIOWrapper name='RUNS/TOR_hand_all+TEgO_fcn8_10k_16_1e-5_450x450/model_files/hypes.json' mode='r' encoding='UTF-8'>
+2021-02-02 12:08:38,514 INFO Hypes loaded successfully.
+2021-02-02 12:08:38,532 INFO Modules loaded successfully. Starting to build tf graph.
+npy file loaded
+WARNING:tensorflow:From /home/jhong12/TOR-app-files/HandSegmentationFiles/HandSegIncludes/tensorflow_fcn/fcn8_vgg.py:284: calling Constant.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+2021-02-02 12:08:39,697 WARNING From /home/jhong12/TOR-app-files/HandSegmentationFiles/HandSegIncludes/tensorflow_fcn/fcn8_vgg.py:284: calling Constant.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+Layer name: conv1_1
+Layer shape: (3, 3, 3, 64)
+2021-02-02 12:08:39,701 INFO Creating Summary for: conv1_1/filter
+2021-02-02 12:08:39,717 INFO Creating Summary for: conv1_1/biases
+Layer name: conv1_2
+Layer shape: (3, 3, 64, 64)
+2021-02-02 12:08:39,745 INFO Creating Summary for: conv1_2/filter
+2021-02-02 12:08:39,760 INFO Creating Summary for: conv1_2/biases
+Layer name: conv2_1
+Layer shape: (3, 3, 64, 128)
+2021-02-02 12:08:39,789 INFO Creating Summary for: conv2_1/filter
+2021-02-02 12:08:39,803 INFO Creating Summary for: conv2_1/biases
+Layer name: conv2_2
+Layer shape: (3, 3, 128, 128)
+2021-02-02 12:08:39,833 INFO Creating Summary for: conv2_2/filter
+2021-02-02 12:08:39,847 INFO Creating Summary for: conv2_2/biases
+Layer name: conv3_1
+Layer shape: (3, 3, 128, 256)
+2021-02-02 12:08:39,877 INFO Creating Summary for: conv3_1/filter
+2021-02-02 12:08:39,891 INFO Creating Summary for: conv3_1/biases
+Layer name: conv3_2
+Layer shape: (3, 3, 256, 256)
+2021-02-02 12:08:39,922 INFO Creating Summary for: conv3_2/filter
+2021-02-02 12:08:39,937 INFO Creating Summary for: conv3_2/biases
+Layer name: conv3_3
+Layer shape: (3, 3, 256, 256)
+2021-02-02 12:08:39,967 INFO Creating Summary for: conv3_3/filter
+2021-02-02 12:08:39,982 INFO Creating Summary for: conv3_3/biases
+Layer name: conv4_1
+Layer shape: (3, 3, 256, 512)
+2021-02-02 12:08:40,018 INFO Creating Summary for: conv4_1/filter
+2021-02-02 12:08:40,033 INFO Creating Summary for: conv4_1/biases
+Layer name: conv4_2
+Layer shape: (3, 3, 512, 512)
+2021-02-02 12:08:40,088 INFO Creating Summary for: conv4_2/filter
+2021-02-02 12:08:40,103 INFO Creating Summary for: conv4_2/biases
+Layer name: conv4_3
+Layer shape: (3, 3, 512, 512)
+2021-02-02 12:08:40,153 INFO Creating Summary for: conv4_3/filter
+2021-02-02 12:08:40,168 INFO Creating Summary for: conv4_3/biases
+Layer name: conv5_1
+Layer shape: (3, 3, 512, 512)
+2021-02-02 12:08:40,215 INFO Creating Summary for: conv5_1/filter
+2021-02-02 12:08:40,230 INFO Creating Summary for: conv5_1/biases
+Layer name: conv5_2
+Layer shape: (3, 3, 512, 512)
+2021-02-02 12:08:40,278 INFO Creating Summary for: conv5_2/filter
+2021-02-02 12:08:40,294 INFO Creating Summary for: conv5_2/biases
+Layer name: conv5_3
+Layer shape: (3, 3, 512, 512)
+2021-02-02 12:08:40,344 INFO Creating Summary for: conv5_3/filter
+2021-02-02 12:08:40,359 INFO Creating Summary for: conv5_3/biases
+Layer name: fc6
+Layer shape: [7, 7, 512, 4096]
+2021-02-02 12:08:42,895 INFO Creating Summary for: fc6/weights
+2021-02-02 12:08:42,912 INFO Creating Summary for: fc6/biases
+Layer name: fc7
+Layer shape: [1, 1, 4096, 4096]
+2021-02-02 12:08:43,481 INFO Creating Summary for: fc7/weights
+2021-02-02 12:08:43,499 INFO Creating Summary for: fc7/biases
+2021-02-02 12:08:43,531 INFO Creating Summary for: score_fr/weights
+2021-02-02 12:08:43,546 INFO Creating Summary for: score_fr/biases
+WARNING:tensorflow:From /home/jhong12/TOR-app-files/venv/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py:201: calling argmax (from tensorflow.python.ops.math_ops) with dimension is deprecated and will be removed in a future version.
+Instructions for updating:
+Use the `axis` argument instead
+2021-02-02 12:08:43,572 WARNING From /home/jhong12/TOR-app-files/venv/lib/python3.6/site-packages/tensorflow/python/util/dispatch.py:201: calling argmax (from tensorflow.python.ops.math_ops) with dimension is deprecated and will be removed in a future version.
+Instructions for updating:
+Use the `axis` argument instead
+2021-02-02 12:08:43,584 INFO Creating Summary for: upscore2/up_filter
+2021-02-02 12:08:43,615 INFO Creating Summary for: score_pool4/weights
+2021-02-02 12:08:43,630 INFO Creating Summary for: score_pool4/biases
+2021-02-02 12:08:43,668 INFO Creating Summary for: upscore4/up_filter
+2021-02-02 12:08:43,699 INFO Creating Summary for: score_pool3/weights
+2021-02-02 12:08:43,714 INFO Creating Summary for: score_pool3/biases
+2021-02-02 12:08:43,749 INFO Creating Summary for: upscore32/up_filter
+2021-02-02 12:08:43,795 INFO Graph build successfully.
+2021-02-02 12:08:43.798966: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:06:00.0 name: GeForce GTX 1080 Ti computeCapability: 6.1
+coreClock: 1.582GHz coreCount: 28 deviceMemorySize: 10.92GiB deviceMemoryBandwidth: 451.17GiB/s
+2021-02-02 12:08:43.799128: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2021-02-02 12:08:43.799369: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcublas.so.10
+2021-02-02 12:08:43.799425: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcufft.so.10
+2021-02-02 12:08:43.799473: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcurand.so.10
+2021-02-02 12:08:43.799519: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusolver.so.10
+2021-02-02 12:08:43.799564: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcusparse.so.10
+2021-02-02 12:08:43.799638: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+2021-02-02 12:08:43.802110: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1858] Adding visible gpu devices: 0
+2021-02-02 12:08:43.802195: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1257] Device interconnect StreamExecutor with strength 1 edge matrix:
+2021-02-02 12:08:43.802217: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1263]      0 
+2021-02-02 12:08:43.802233: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1276] 0:   N 
+2021-02-02 12:08:43.804884: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1402] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10266 MB memory) -> physical GPU (device: 0, name: GeForce GTX 1080 Ti, pci bus id: 0000:06:00.0, compute capability: 6.1)
+2021-02-02 12:08:43,865 INFO /home/kjlee/workspace/TOR/hand-guided/hypes/../RUNS/TOR_hand_all+TEgO_2019_03_14_12.33/model.ckpt-9999
+INFO:tensorflow:Restoring parameters from RUNS/TOR_hand_all+TEgO_fcn8_10k_16_1e-5_450x450/model.ckpt-9999
+2021-02-02 12:08:43,867 INFO Restoring parameters from RUNS/TOR_hand_all+TEgO_fcn8_10k_16_1e-5_450x450/model.ckpt-9999
+2021-02-02 12:08:45,219 INFO Weights loaded successfully.
+WARNING:tensorflow:From /home/jhong12/TOR-app-files/ObjectDetectionFiles/2_Training/src/keras_yolo3/yolo.py:50: The name tf.keras.backend.get_session is deprecated. Please use tf.compat.v1.keras.backend.get_session instead.
+
+2021-02-02 12:08:45,222 WARNING From /home/jhong12/TOR-app-files/ObjectDetectionFiles/2_Training/src/keras_yolo3/yolo.py:50: The name tf.keras.backend.get_session is deprecated. Please use tf.compat.v1.keras.backend.get_session instead.
+
+/home/jhong12/TOR-app-files/ObjectDetectionFiles/Data/Model_Weights/trained_weights_final.h5 model, anchors, and classes loaded in 7.18sec.
+2021-02-02 12:08:53,208 INFO Running hand segmentation
+2021-02-02 12:08:53.327249: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudnn.so.7
+2021-02-02 12:08:55.291728: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcublas.so.10
+2021-02-02 12:08:56,102 INFO Given threshold value: 0.500000
+2021-02-02 12:08:56,103 INFO Max threshold value: 0.008426
+blur: 7.391941701949089
+(416, 416, 3)
+2021-02-02 12:08:57.205508: E tensorflow/core/grappler/optimizers/meta_optimizer.cc:581] layout failed: Invalid argument: Subshape must have computed start >= end since stride is negative, but is 0 and 2 (computed from start 0 and end 9223372036854775807 over shape with rank 2 and stride-1)
+2021-02-02 12:08:57.229644: E tensorflow/core/grappler/optimizers/meta_optimizer.cc:581] remapper failed: Invalid argument: Subshape must have computed start >= end since stride is negative, but is 0 and 2 (computed from start 0 and end 9223372036854775807 over shape with rank 2 and stride-1)
+2021-02-02 12:08:57.445134: E tensorflow/core/grappler/optimizers/meta_optimizer.cc:581] remapper failed: Invalid argument: Subshape must have computed start >= end since stride is negative, but is 0 and 2 (computed from start 0 and end 9223372036854775807 over shape with rank 2 and stride-1)
+Found 1 boxes for img
+lacroixmango 0.85 (435, 58) (1129, 1257)
+Time spent: 1.583sec
+prediction: [{'xmin': 435, 'ymin': 58, 'xmax': 1129, 'ymax': 1257, 'class': 'lacroixmango', 'confidence': 0.852341}] (1920, 1440, 3)
+run
+GET
+173.73.251.208 - - [02/Feb/2021 12:09:36] "GET / HTTP/1.1" 200 -
+GET
+173.73.251.208 - - [02/Feb/2021 12:09:36] "GET /favicon.ico HTTP/1.1" 200 -
+GET
+173.73.251.208 - - [02/Feb/2021 12:09:45] "GET / HTTP/1.1" 200 -
+GET
+173.73.251.208 - - [02/Feb/2021 12:09:46] "GET /favicon.ico HTTP/1.1" 200 -
+GET
+173.73.251.208 - - [02/Feb/2021 12:09:53] "GET / HTTP/1.1" 200 -
+GET
+173.73.251.208 - - [02/Feb/2021 12:09:53] "GET /favicon.ico HTTP/1.1" 200 -
+{'userId': 'CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83', 'category': 'Spice', 'type': 'test', 'imgPath': '/home/jhong12/TOR-app-files/photo/TestFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/step12-2021-02-02-12-10-45-9580.jpg'}
+CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83 test Spice /home/jhong12/TOR-app-files/photo/TestFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/step12-2021-02-02-12-10-45-9580.jpg
+WARNING:tensorflow:From /home/jhong12/TOR-app-files/venv/lib/python3.6/site-packages/tensorflow/python/ops/init_ops.py:97: calling GlorotUniform.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+2021-02-02 12:10:46,230 WARNING From /home/jhong12/TOR-app-files/venv/lib/python3.6/site-packages/tensorflow/python/ops/init_ops.py:97: calling GlorotUniform.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:From /home/jhong12/TOR-app-files/venv/lib/python3.6/site-packages/tensorflow/python/ops/init_ops.py:97: calling Zeros.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+2021-02-02 12:10:46,231 WARNING From /home/jhong12/TOR-app-files/venv/lib/python3.6/site-packages/tensorflow/python/ops/init_ops.py:97: calling Zeros.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:From /home/jhong12/TOR-app-files/venv/lib/python3.6/site-packages/tensorflow/python/ops/init_ops.py:97: calling Ones.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+2021-02-02 12:10:46,236 WARNING From /home/jhong12/TOR-app-files/venv/lib/python3.6/site-packages/tensorflow/python/ops/init_ops.py:97: calling Ones.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:From /home/jhong12/TOR-app-files/venv/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py:2070: Model.state_updates (from tensorflow.python.keras.engine.training) is deprecated and will be removed in a future version.
+Instructions for updating:
+This property should not be used in TensorFlow 2.0, as updates are applied automatically.
+2021-02-02 12:10:58,063 WARNING From /home/jhong12/TOR-app-files/venv/lib/python3.6/site-packages/tensorflow/python/keras/engine/training_v1.py:2070: Model.state_updates (from tensorflow.python.keras.engine.training) is deprecated and will be removed in a future version.
+Instructions for updating:
+This property should not be used in TensorFlow 2.0, as updates are applied automatically.
+[1.8469521651144497e-15, 1.0, 4.888355345511464e-13]
+Omega3 1.4410275703455582e-11 {'Knife': 1.8469521651144497e-15, 'Omega3': 1.0, 'Remote': 4.888355345511464e-13}
+{'userId': 'CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83', 'category': 'Spice', 'type': 'test', 'imgPath': '/home/jhong12/TOR-app-files/photo/TestFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/step12-2021-02-02-12-11-16-9420.jpg'}
+CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83 test Spice /home/jhong12/TOR-app-files/photo/TestFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/step12-2021-02-02-12-11-16-9420.jpg
+[1.8876105106063745e-12, 0.9999914169311523, 8.613983482064214e-06]
+Omega3 0.00010907133694275113 {'Knife': 1.8876105106063745e-12, 'Omega3': 0.9999914169311523, 'Remote': 8.613983482064214e-06}
+{'userId': 'CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83', 'category': 'Spice', 'type': 'test', 'imgPath': '/home/jhong12/TOR-app-files/photo/TestFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/step12-2021-02-02-12-11-26-2800.jpg'}
+CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83 test Spice /home/jhong12/TOR-app-files/photo/TestFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/step12-2021-02-02-12-11-26-2800.jpg
+[5.314291758387601e-13, 4.1862202009327976e-20, 1.0]
+Remote 1.5551247122728077e-11 {'Knife': 5.314291758387601e-13, 'Omega3': 4.1862202009327976e-20, 'Remote': 1.0}
+45.95.169.237 - - [02/Feb/2021 12:54:18] code 400, message Bad HTTP/0.9 request type ('Z¥\x01')
+45.95.169.237 - - [02/Feb/2021 12:54:18] "Z¥     " 400 -
+45.95.169.237 - - [02/Feb/2021 14:08:51] code 400, message Bad HTTP/0.9 request type ('Z¥\x01')
+45.95.169.237 - - [02/Feb/2021 14:08:51] "Z¥     " 400 -

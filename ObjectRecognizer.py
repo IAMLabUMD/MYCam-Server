@@ -9,6 +9,9 @@ import time
 import numpy as np
 import os
 import scipy.stats
+import threading
+import tensorflow
+
 from pathlib import Path
 from shutil import copyfile
 
@@ -22,6 +25,8 @@ from keras.applications import InceptionV3
 from keras.applications import MobileNetV2
 from keras.applications.mobilenet import preprocess_input
 from keras.utils import to_categorical
+from tensorflow.python.keras.backend import set_session
+
 
 
 class ObjectRecognizer:
@@ -32,7 +37,9 @@ class ObjectRecognizer:
         self.curr_model_dir = 'no model is loaded.'
         self.model = None
         self.labels = None
-
+        
+        self.sess = tensorflow.python.keras.backend.get_session()
+        
         ####
         ## The base_model is used for train_with_bottleneck and predict_with_bottleneck functions,
         ## but these functions are not used now.
@@ -55,6 +62,8 @@ class ObjectRecognizer:
     def load_model_and_labels(self, model_dir):
         if self.curr_model_dir == model_dir:
             return self.model, self.labels
+        
+        
 
         model_path = os.path.join(model_dir, 'model.h5')
         model = load_model(model_path)
@@ -77,7 +86,7 @@ class ObjectRecognizer:
     '''
     def save_model_and_labels(self, save_dir, org_dir=None):
         if self.debug:
-            print('saving the model...', save_dir)
+            print('Saving the model...', save_dir)
         Path(save_dir).mkdir(parents=True, exist_ok=True)  # create the directory if it does not exist.
 
         # when the original files are given, just copy files.
@@ -92,6 +101,7 @@ class ObjectRecognizer:
 
         # save the model to file
         model_path = os.path.join(save_dir, 'model.h5')
+        set_session(self.sess)
         self.model.save(model_path)
 
         # save the labels to file
@@ -100,6 +110,9 @@ class ObjectRecognizer:
         for i in range(len(self.labels)):
             f.write(self.labels[i] + '\n')
         f.close()
+
+        if self.debug:
+            print('saving the model to a file: ', time.time() - self.start_time)
 
     ''' saves bottleneck features of the images
         https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
@@ -144,7 +157,7 @@ class ObjectRecognizer:
         if self.debug:
             print('Start training ...', img_dir)
 
-        start_time = time.time()
+        self.start_time = time.time()
         train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)  # included in our dependencies
         train_generator = train_datagen.flow_from_directory(img_dir,
                                                             target_size=(self.input_width, self.input_height),
@@ -156,7 +169,11 @@ class ObjectRecognizer:
         labels = (train_generator.class_indices)
         labels2 = dict((v, k) for k, v in labels.items())
         if self.debug:
-            print('training data are collected: ', time.time() - start_time)
+            print('Training data are collected: ', time.time() - self.start_time)
+            
+        if len(labels) < 3:
+            print('Cannot start training with fewer than three objects.', len(labels))
+            return -1 # fail
 
         # imports the mobilenet model and discards the last 1000 neuron layer.
         base_model = InceptionV3(weights='imagenet', include_top=False,
@@ -164,7 +181,7 @@ class ObjectRecognizer:
         base_model.trainable = False
 
         if self.debug:
-            print('loading the base model (', base_model.name, '): ', time.time() - start_time)
+            print('Loading the base model (', base_model.name, '): ', time.time() - self.start_time)
 
         x = base_model.output
         x = Flatten()(x)
@@ -176,14 +193,14 @@ class ObjectRecognizer:
         model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
         if self.debug:
-            print('setting up the training: ', time.time() - start_time)
+            print('Setting up the training: ', time.time() - self.start_time)
 
         step_size_train = train_generator.n // train_generator.batch_size
         model.fit(train_generator, steps_per_epoch=step_size_train,
-                  epochs=100)  # 200? # 80: around 2 minutes, 200: around 5 minutes, 100: current
+                  epochs=50)  # 200? # 80: around 2 minutes, 200: around 5 minutes, 100: current
 
         if self.debug:
-            print('training is done: ', time.time() - start_time)
+            print('Training is done: ', time.time() - self.start_time)
 
         # set current model and labels
         self.curr_model_dir = model_dir
@@ -191,10 +208,10 @@ class ObjectRecognizer:
         self.model = model
 
         # save the trained model and labels
-        self.save_model_and_labels(model_dir)
-
-        if self.debug:
-            print('saving the model to a file: ', time.time() - start_time)
+        t = threading.Thread(target=self.save_model_and_labels, args=(model_dir,))
+        t.start()
+#         self.save_model_and_labels(model_dir)
+        return 1 # success
 
     ''' predicts the object in an image
 
@@ -336,12 +353,13 @@ class ObjectRecognizer:
         return best_label, entropy, conf
         
     def train(self, model_dir, img_dir):
-        # self.train_without_bottleneck(model_dir, img_dir)
-        self.train_with_bottleneck(model_dir, img_dir)
+        train_res = self.train_without_bottleneck(model_dir, img_dir)
+        self.predict(model_dir, '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Remote/1.jpg') # warm up
+        return train_res
         
     def predict(self, model_dir, img_path):
-        # return self.predict_without_bottleneck(model_dir, img_path)
-        return self.predict_with_bottleneck(model_dir, img_path)
+        return self.predict_without_bottleneck(model_dir, img_path)
+#         return self.predict_with_bottleneck(model_dir, img_path)
 
 
 if __name__ == '__main__':
