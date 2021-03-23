@@ -13,7 +13,7 @@ import threading
 import tensorflow
 
 from pathlib import Path
-from shutil import copyfile
+from shutil import copyfile, rmtree
 
 from keras.layers import Dense, Flatten
 from keras.preprocessing.image import ImageDataGenerator
@@ -360,7 +360,12 @@ class ObjectRecognizer:
     def predict(self, model_dir, img_path):
         return self.predict_without_bottleneck(model_dir, img_path)
 #         return self.predict_with_bottleneck(model_dir, img_path)
-
+    
+    def reset(self, model_dir):
+        try:
+            rmtree(model_dir)
+        except OSError as e:
+            print("Reset error: %s : %s" % (model_dir, e.strerror))
 
 if __name__ == '__main__':
     # test codes

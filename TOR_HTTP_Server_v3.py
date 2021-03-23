@@ -18,8 +18,9 @@ import traceback
 
 import time
 import os
-from ObjectRecognizer import ObjectRecognizer
+from ObjectRecognizerV2 import ObjectRecognizer
 from DescriptorGenerator import DescriptorGenerator
+from StudyHelper import StudyHelper
 from datetime import datetime
 
 
@@ -35,7 +36,7 @@ from datetime import datetime
 
 # jupyter notebook --no-browser --port=4000
 # ssh -N -f -L localhost:4000:localhost:4000 jhong12@128.8.235.4
-# Current PID: 34740
+# Current PID: 39250
 
 log_path = '../logs/request_logs.txt'
 		
@@ -58,7 +59,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 		content_length = int(self.headers['Content-Length'])
 		html_body = self.rfile.read(content_length)
 
-		postStr = html_body.decode().replace('%2F', '/')
+		postStr = html_body.decode().replace('%2F', '/').replace('+', ' ')
 		postStr = postStr.split('&')
 		params = {}
 		for pstr in postStr:
@@ -93,7 +94,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 			userID, cmd, category, img_path, request_time, org_fname, object_name = self.parseParams()
 			model_dir = '/home/jhong12/TOR-app-files/models/' + userID
 			print(userID, cmd, category, img_path)
-			writeLog('request,'+userID+','+cmd+','+category+','+img_path+','+request_time+','+org_fname)
+			writeLog('request,'+userID+','+cmd+','+category+','+img_path+','+request_time+','+org_fname+','+object_name)
 			response = BytesIO()
 
 			if cmd == 'test':
@@ -106,7 +107,8 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 					output = str(entropy)
 					for label, confidence in conf.items():
 						output = output + '-:-' + label + '/' + str(confidence)
-
+				
+				print(output)
 				response.write(str.encode(output))
 				writeLog('testResult,'+userID+','+org_fname+','+output)
 
@@ -118,10 +120,15 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 				f = open(markFile, 'w')
 				f.write('yes')
 				f.close()
-				train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/' + userID + '/' + category
+				train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/' + userID
 
-				object_recognizer.save_model_and_labels(model_dir + '_prev', org_dir=model_dir)
+				if os.path.isdir(model_dir):
+					object_recognizer.save_model_and_labels(model_dir + '_prev', org_dir=model_dir)
+					sh = StudyHelper()
+					sh.AddModelHistory(userID, model_dir, 'Train')
+					
 				train_res = object_recognizer.train(model_dir, train_img_dir)
+				des_generator.initialize()
 
 				f = open(markFile, 'w')
 				f.write('no')
@@ -142,13 +149,30 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 				writeLog('imgDescriptors,'+userID+','+output+','+org_fname+','+str(desc_dic))
 				response.write(str.encode(output))
 			elif cmd == 'getSetDescriptor':
-				train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/' + userID + '/' + category + '/' + object_name
-				arinfo_path = '/home/jhong12/TOR-app-files/ARInfo/' + userID + '/' + object_name + '/desc_info.txt'
+# 				train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/' + userID + '/' + category + '/' + object_name
+				arinfo_path = '/home/jhong12/TOR-app-files/ARInfo/' + userID + '/TrainedObjects/' + object_name + '-desc_info.txt'
 				
-				bg_var, side_var, dist_var, hand, blurry, cropped, small = des_generator.getSetDescriptor(train_img_dir, arinfo_path)
+				bg_var, side_var, dist_var, hand, blurry, cropped, small = des_generator.getSetDescriptor(arinfo_path)
 				output = str(bg_var)+','+str(side_var)+','+str(dist_var)+','+str(hand)+','+str(blurry)+','+str(cropped)+','+str(small)
 				writeLog('setDescriptors,'+userID+','+output)
 				response.write(str.encode(output))
+			elif cmd == 'getSetDescriptorForReview':
+				arinfo_path = '/home/jhong12/TOR-app-files/ARInfo/' + userID + '/Temp/' + object_name
+				
+				bg_var, side_var, dist_var, hand, blurry, cropped, small = des_generator.getSetDescriptor(arinfo_path)
+				output = str(bg_var)+','+str(side_var)+','+str(dist_var)+','+str(hand)+','+str(blurry)+','+str(cropped)+','+str(small)
+				writeLog('getSetDescriptorForReview,'+userID+','+output)
+				response.write(str.encode(output))
+			elif cmd == 'Reset':
+				if os.path.isdir(model_dir):
+					sh = StudyHelper()
+					save_name = sh.AddModelHistory(userID, model_dir, 'Reset')
+					object_recognizer.reset(model_dir)
+					response.write(str.encode('Reset:'+save_name))
+				else:
+					response.write(str.encode('No model to reset.'))
+			elif cmd == 'rename':
+				object_recognizer.load_model_and_labels(model_dir)
 			else:
 				print('Debugging...')
 
@@ -168,7 +192,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-	os.environ['CUDA_VISIBLE_DEVICES'] = '1'  # second gpu
+# 	os.environ['CUDA_VISIBLE_DEVICES'] = '1'  # second gpu
 
 	markFile = '/home/jhong12/TOR-app-files/isTraining'
 	f = open(markFile, 'w')

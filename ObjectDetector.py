@@ -6,6 +6,8 @@
 '''
 
 import os
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import sys
 
 od_path = '/home/jhong12/TOR-app-files/ObjectDetectionFiles/'
@@ -65,7 +67,7 @@ class ObjectDetector:
 			)
 		
 		res = self.decode_predictions(prediction)
-		print('prediction:', res, image.shape)
+		print('object detection:', res, image.shape)
 		return res, image.shape[1], image.shape[0]
 	
 	def decode_predictions(self, predictions):

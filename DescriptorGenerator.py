@@ -4,6 +4,9 @@
     Author: Jonggi Hong
     Date: 01/03/2020
 '''
+import os
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import numpy as np
 import cv2
 import sys
@@ -71,10 +74,6 @@ class DescriptorGenerator:
 		return hand, blurry, cropped, small, desc_obj
 # 		return hand_area, blurriness, 
 	
-	def getSetDescriptor(self, set_path, arinfo_path):
-		ret = ''
-		return ret
-	
 	def isSmall(self, box, img_width, img_height):
 		box_w = box['xmax']-box['xmin']
 		box_y = box['ymax']-box['ymin']
@@ -101,16 +100,25 @@ class DescriptorGenerator:
 	'''
 		generate the set descriptor
 	'''
-	def getSetDescriptor(self, set_path, arinfo_path):
+	def getSetDescriptor(self, arinfo_path):
 		arinfo = self.loadARInfo(arinfo_path)
 		cam_pos_sd, cam_ori_sd = self.computeBackgroundVariation(arinfo)
 		side_num = self.computeSideVariation(arinfo)
 		dist_sd = self.computeDistanceVariation(arinfo)
 		hand, blurry, cropped, small = self.countImgDescriptors(arinfo)
 		
-		bg_var = True if cam_pos_sd > 0.1 or cam_ori_sd > 0.1 else False
-		side_var = True if side_num > 1 else False
-		dist_var = True if dist_sd > 0.1 else False
+# 		bg_var = True if cam_pos_sd > 0.1 or cam_ori_sd > 0.1 else False
+# 		side_var = True if side_num > 1 else False
+# 		dist_var = True if dist_sd > 0.1 else False
+# 		
+# 		return bg_var, side_var, dist_var, hand, blurry, cropped, small
+
+# 		bg_var = min(max(cam_pos_sd/0.15, cam_ori_sd / 0.15), 1.0) * 100
+# 		side_var = min(side_num/1.5, 1.0) * 100
+# 		dist_var = min(dist_sd/0.15, 1.0) * 100
+		bg_var = max(cam_pos_sd, cam_ori_sd)
+		side_var = side_num
+		dist_var = dist_sd
 		
 		return bg_var, side_var, dist_var, hand, blurry, cropped, small
 
@@ -198,6 +206,9 @@ class DescriptorGenerator:
 		f = open(arinfo_path, "r")
 		for line in f:
 			words = line.split('#')
+			for i, w in enumerate(words):
+				print(i, w)
+			print()
 			img_id = int(words[0])
 			arinfo[img_id] = {}
 			arinfo[img_id]['ar_side'] = words[1]
@@ -225,15 +236,24 @@ class DescriptorGenerator:
 
 if __name__ == '__main__':
 	dg = DescriptorGenerator()
+	dg.initialize()
 # 	dg.getBlurriness('/home/jhong12/TOR-app-files/photo/TempFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/tmp_2.jpg')
 
-	print('Omega3 - with variation')
-	train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/Omega3'
-	arinfo_path = '/home/jhong12/TOR-app-files/ARInfo/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Omega3/desc_info.txt'
-	dg.getSetDescriptor(train_img_dir, arinfo_path)
+# 	print('Omega3 - with variation')
+# 	train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/Omega3'
+# 	arinfo_path = '/home/jhong12/TOR-app-files/ARInfo/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Omega3/desc_info.txt'
+# 	print(dg.getSetDescriptor(train_img_dir, arinfo_path))
+# 
+# 	print()
+# 	print('Knife - no variation')
+# 	train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/Knife'
+# 	arinfo_path = '/home/jhong12/TOR-app-files/ARInfo/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Knife/desc_info.txt'
+# 	print(dg.getSetDescriptor(train_img_dir, arinfo_path))
 
-	print()
-	print('Knife - no variation')
-	train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Spice/Knife'
-	arinfo_path = '/home/jhong12/TOR-app-files/ARInfo/CA238C3A-BDE9-4A7F-8CCA-76956A9ABD83/Knife/desc_info.txt'
-	dg.getSetDescriptor(train_img_dir, arinfo_path)
+	train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/B2803393-73CE-4F25-B9F1-410D2A37D0DE/Spice/Knife'
+	arinfo_path = '/home/jhong12/TOR-app-files/ARInfo/B2803393-73CE-4F25-B9F1-410D2A37D0DE/Knife/desc_info.txt'
+	print(dg.getSetDescriptor(train_img_dir, arinfo_path))
+	
+	train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/74DBAC2E-79F5-4C39-B281-7719602D54BC/Spice/Mouse'
+	arinfo_path = '/home/jhong12/TOR-app-files/ARInfo/74DBAC2E-79F5-4C39-B281-7719602D54BC/Mouse/desc_info.txt'
+	print(dg.getSetDescriptor(train_img_dir, arinfo_path))
