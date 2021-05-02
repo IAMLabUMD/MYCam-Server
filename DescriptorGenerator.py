@@ -5,8 +5,6 @@
     Date: 01/03/2020
 '''
 import os
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import numpy as np
 import cv2
 import sys
@@ -117,8 +115,18 @@ class DescriptorGenerator:
 # 		side_var = min(side_num/1.5, 1.0) * 100
 # 		dist_var = min(dist_sd/0.15, 1.0) * 100
 		bg_var = max(cam_pos_sd, cam_ori_sd)
+		
 		side_var = side_num
+		if side_var == 0:
+			side_var = cam_ori_sd
+			
 		dist_var = dist_sd
+		if dist_var == 0:
+			dist_var = cam_pos_sd
+			
+		print('set descriptors:')
+		print('bg_var', bg_var, 'side_var', side_var, 'dist_var', dist_var)
+		print('cam_pos_sd', cam_pos_sd, 'cam_ori_sd', cam_ori_sd, 'side_num', side_num, 'dist_sd', dist_sd)
 		
 		return bg_var, side_var, dist_var, hand, blurry, cropped, small
 
@@ -206,9 +214,9 @@ class DescriptorGenerator:
 		f = open(arinfo_path, "r")
 		for line in f:
 			words = line.split('#')
-			for i, w in enumerate(words):
-				print(i, w)
-			print()
+# 			for i, w in enumerate(words):
+# 				print(i, w)
+# 			print()
 			img_id = int(words[0])
 			arinfo[img_id] = {}
 			arinfo[img_id]['ar_side'] = words[1]

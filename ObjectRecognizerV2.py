@@ -24,8 +24,6 @@ import csv
 import json
 
 os.environ['TF_CPP_MIN_LOG_LEVEL']='3' # https://github.com/tensorflow/tensorflow/issues/1258import os
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 # import tensorflow as tf
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
@@ -740,7 +738,7 @@ class ObjectRecognizer:
 		if class_count == 0:
 			print('No valid folders of images found at ' + img_dir)
 			return -1
-		if class_count == 1:
+		if class_count < 3:
 			print('Only one valid folder of images found at ' + img_dir +
 				' - multiple classes are needed for classification.')
 			return -1
@@ -975,6 +973,6 @@ if __name__ == '__main__':
 	# test codes
 	orec = ObjectRecognizer()
 	orec.debug = True
-	orec.train_with_steps('/home/jhong12/URCam/model', '/home/jhong12/TOR-app-files/DatasetForURCam/Images', 1000)
+# 	orec.train_with_steps('/home/jhong12/URCam/model', '/home/jhong12/TOR-app-files/DatasetForURCam/Images', 1000)
 # 	print(orec.predict('/home/jhong12/GORTestModels/tmp', '/home/jhong12/TOR-app-files/photo/TrainFiles/72F80764-EA2B-4B74-93B6-C4CA584551A4/Spice/Remote/1.jpg')) # warm up
-
+	orec.train('/home/jhong12/TOR-app-files/models/AFE75DDE-6684-4652-9688-76B3AFBA90D6', '/home/jhong12/TOR-app-files/photo/TrainFiles/AFE75DDE-6684-4652-9688-76B3AFBA90D6') # Ebrima's second pilot data

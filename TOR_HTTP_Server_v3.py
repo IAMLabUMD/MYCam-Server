@@ -36,7 +36,7 @@ from datetime import datetime
 
 # jupyter notebook --no-browser --port=4000
 # ssh -N -f -L localhost:4000:localhost:4000 jhong12@128.8.235.4
-# Current PID: 39250
+# Current PID: 1q
 
 log_path = '../logs/request_logs.txt'
 		
@@ -111,6 +111,22 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 				print(output)
 				response.write(str.encode(output))
 				writeLog('testResult,'+userID+','+org_fname+','+output)
+			elif cmd == 'test-URCam':
+				urcam_model_dir = '/home/jhong12/URCam/model'
+				best_label, entropy, conf = object_recognizer.predict(urcam_model_dir, img_path)
+
+				output = ''
+				if best_label is None: # if the model does not exist
+					output = 'Object recognition model does not exist.'
+				else:
+					output = str(entropy)
+					for label, confidence in conf.items():
+						output = output + '-:-' + label + '/' + str(confidence)
+			
+				print(output)
+				response.write(str.encode(output))
+				writeLog('testResult,'+userID+','+org_fname+','+output)
+				
 
 			elif cmd == 'loadModel':
 				object_recognizer.load_model_and_labels(model_dir)
@@ -192,8 +208,9 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-# 	os.environ['CUDA_VISIBLE_DEVICES'] = '1'  # second gpu
-
+	os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
+	os.environ["CUDA_VISIBLE_DEVICES"]="7"
+	
 	markFile = '/home/jhong12/TOR-app-files/isTraining'
 	f = open(markFile, 'w')
 	f.write('no')
