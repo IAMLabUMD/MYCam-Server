@@ -123,7 +123,7 @@ class DescriptorGenerator:
 		dist_var = dist_sd
 		if dist_var == 0:
 			dist_var = cam_pos_sd
-			
+		
 		print('set descriptors:')
 		print('bg_var', bg_var, 'side_var', side_var, 'dist_var', dist_var)
 		print('cam_pos_sd', cam_pos_sd, 'cam_ori_sd', cam_ori_sd, 'side_num', side_num, 'dist_sd', dist_sd)

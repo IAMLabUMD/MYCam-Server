@@ -67,7 +67,7 @@ class ObjectDetector:
 			)
 		
 		res = self.decode_predictions(prediction)
-		print('object detection:', res, image.shape)
+# 		print('object detection:', res, image.shape)
 		return res, image.shape[1], image.shape[0]
 	
 	def decode_predictions(self, predictions):

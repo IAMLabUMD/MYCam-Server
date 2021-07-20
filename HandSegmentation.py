@@ -259,7 +259,8 @@ main function
 
 
 def main():
-    model = 'TOR_hand_all+TEgO_fcn8_10k_16_1e-5_450x450'
+#     model = 'TOR_hand_all+TEgO_fcn8_10k_16_1e-5_450x450'
+    model ='TOR_hand_all+TOR_feedback_fcn8_10k_16_1e-5_450x450'
     threshold = 0.5
     width = 450
     height = 450

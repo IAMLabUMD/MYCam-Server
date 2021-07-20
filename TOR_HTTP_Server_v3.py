@@ -161,9 +161,19 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 					
 			elif cmd == 'getImgDescriptor':
 				hand, blurry, cropped, small, desc_dic = des_generator.getImageDescriptor(img_path)
+				
+				print()
+				print('##### Image Descriptors', org_fname)
+				print('hand', hand, desc_dic['hand_area'])
+				print('blurry', blurry, desc_dic['blurriness'])
+				print('cropped', cropped, len(desc_dic['boxes']))
+				print('small', small, len(desc_dic['boxes']))
+				print()
+				
 				output = str(hand)+'#'+str(blurry)+'#'+str(cropped)+'#'+str(small)+'#'+str(desc_dic)+'#'+str(request_time)
 				writeLog('imgDescriptors,'+userID+','+output+','+org_fname+','+str(desc_dic))
 				response.write(str.encode(output))
+				
 			elif cmd == 'getSetDescriptor':
 # 				train_img_dir = '/home/jhong12/TOR-app-files/photo/TrainFiles/' + userID + '/' + category + '/' + object_name
 				arinfo_path = '/home/jhong12/TOR-app-files/ARInfo/' + userID + '/TrainedObjects/' + object_name + '-desc_info.txt'
