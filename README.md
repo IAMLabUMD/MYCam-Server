@@ -1,18 +1,18 @@
-# Server for TOR App
+# Server for the MYCam App
 
 <a href="https://jonggi.github.io"><img src="https://img.shields.io/badge/contact-Jonggi Hong-blue.svg?style=flat" alt="Contact"/></a>
 <a href="LICENSE.md"><img src="https://img.shields.io/badge/license-TBD-red.svg?style=flat" alt="License: TBD"/></a>
 <img src="https://img.shields.io/badge/platform-Linux-green"/> 
 <img src="https://img.shields.io/badge/language-Python 3.6-lightblue"/>
 
-The codes on the server side communicating with [the mobile TOR app](https://github.com/IAMLabUMD/TORApp-Mobile). The main role of the server is as follows:
+The codes on the server side communicating with [the mobile MYCam app](https://github.com/IAMLabUMD/MYCam-Mobile). The main role of the server is as follows:
 1. It trains an Inception V3 model with photos from the user.
 2. It recognizes objects with the model
 3. It calculates the attributes of a photo or a set of photos. 
 
 
 ## Requirements
-In order to run the TOR app, you will need to meet the following requirements:
+In order to run the MYCam app, you will need to meet the following requirements:
 ```
 - Python 3.6
 - Ubuntu 16.04
@@ -21,7 +21,7 @@ In order to run the TOR app, you will need to meet the following requirements:
 ```
 
 ## Getting started
-To build and run the TOR app, please follow these steps,
+To build and run the MYCam app, please follow these steps,
 1. Set up the environment. See instructions [here](https://www.tensorflow.org/install/pip) to find out how to set up tensorflow in Ubuntu 16.04.
 2. Run `TOR_HTTP_Server_v3.py` with the following command.
 ```
@@ -109,7 +109,7 @@ od.detect('/home/jhong12/TOR-app-files/photo/TempFiles/CA238C3A-BDE9-4A7F-8CCA-7
 ---
 
 `StudyHelper.py`
-: Helper functions for the user study with the TOR app
+: Helper functions for the user study with the MYCam app
 
 ---
 
