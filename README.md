@@ -10,6 +10,8 @@ This page explains [codes](https://github.com/IAMLabUMD/MYCam-Server) on the ser
 2. It recognizes objects with the model
 3. It calculates the attributes of a photo or a set of photos. 
 
+You can access the codes here. https://github.com/IAMLabUMD/MYCam-Server
+
 
 ## Requirements
 In order to run the MYCam app, you will need to meet the following requirements:
