@@ -5,7 +5,7 @@
 <img src="https://img.shields.io/badge/platform-Linux-green"/> 
 <img src="https://img.shields.io/badge/language-Python 3.6-lightblue"/>
 
-This page explains [codes]((https://github.com/IAMLabUMD/MYCam-Server) on the server side communicating with [the mobile MYCam app](https://github.com/IAMLabUMD/MYCam-Mobile). The main role of the server is as follows:
+This page explains [codes](https://github.com/IAMLabUMD/MYCam-Server) on the server side communicating with [the mobile MYCam app](https://github.com/IAMLabUMD/MYCam-Mobile). The main role of the server is as follows:
 1. It trains an Inception V3 model with photos from the user.
 2. It recognizes objects with the model
 3. It calculates the attributes of a photo or a set of photos. 
